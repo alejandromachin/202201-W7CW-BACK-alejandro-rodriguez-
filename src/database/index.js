@@ -8,7 +8,7 @@ const connectToDataBase = (connectionString) =>
         reject(new Error(`You can't connect a database: ${error.message}`));
         return;
       }
-      debug("You're connected a database");
+      debug("You're connected to the database");
       resolve();
     });
   });
