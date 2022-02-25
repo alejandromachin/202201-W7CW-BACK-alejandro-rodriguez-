@@ -7,7 +7,9 @@
     "prepare": "husky install",
     "start": "node src",
     "start-dev": "nodemon src -q",
-    "test": "jest --watchAll",
+    "test": "jest",
+    "testTuneao": "npx jest --runInBand --verbose --detectOpenHandles",
+    "testWatchall": "jest --watchAll",
     "testCoverage": "jest --watchAll --coverage"
   },
   "keywords": [],
