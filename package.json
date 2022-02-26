@@ -12,7 +12,14 @@
     "testCoverage": "jest --watchAll --coverage"
   },
   "jest": {
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "collectCoverageFrom": [
+      "src/**/*.js",
+      "!src/**/*.test.js",
+      "!src/index.js",
+      "!src/database/index.js",
+      "!src/server/serverUp.js"
+    ]
   },
   "keywords": [],
   "author": "",
