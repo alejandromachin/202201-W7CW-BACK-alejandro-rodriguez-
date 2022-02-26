@@ -6,6 +6,7 @@ const accessRouter = require("./routers/accessRouter");
 
 const app = express();
 app.use(morgan("dev"));
+app.use(express.json());
 
 app.use("/login", accessRouter);
 
