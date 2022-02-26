@@ -13,6 +13,7 @@ const loginUser = async (req, res, next) => {
     next(error);
   } else {
     const userData = {
+      name: user.name,
       username: user.username,
       id: user.id,
     };
