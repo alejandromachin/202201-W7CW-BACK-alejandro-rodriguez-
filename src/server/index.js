@@ -17,7 +17,7 @@ app.use(
   })
 );
 
-app.use("/login", accessRouter);
+app.use("/", accessRouter);
 
 app.use(notFoundError);
 app.use(generalError);
