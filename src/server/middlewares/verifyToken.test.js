@@ -37,4 +37,18 @@ describe("given a verifyToken ", () => {
       expect(next).toHaveBeenCalledWith(error);
     });
   });
+
+  describe("When it receives a response with a missing token", () => {
+    test("Then it should call its next method with the error", async () => {
+      const req = {
+        header: jest.fn().mockReturnValue(undefined),
+      };
+      const error = new Error("Token missing");
+      const next = jest.fn();
+
+      await verifyToken(req, null, next);
+
+      expect(next).toHaveBeenCalledWith(error);
+    });
+  });
 });
