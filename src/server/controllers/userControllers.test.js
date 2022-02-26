@@ -1,3 +1,4 @@
+const bcrypt = require("bcrypt");
 const User = require("../../database/models/User");
 const { loginUser } = require("./userControllers");
 
@@ -19,6 +20,20 @@ describe("Given a getLogin function", () => {
       await loginUser(req, null, next);
 
       expect(next).toHaveBeenCalledWith(error);
+    });
+
+    test("Then if the user exists but the password is not correct", async () => {
+      const req = {
+        body: { username: "machinazo", password: "123" },
+      };
+      const next = jest.fn();
+      const error = new Error("Username or password are wrong");
+      User.find = jest.fn().mockRejectedValue(req.body);
+      bcrypt.compare = jest.fn().mockRejectedValue(false);
+
+      await loginUser(req, null, next);
+
+      expect(next).toBeCalledWith(error);
     });
   });
 });
