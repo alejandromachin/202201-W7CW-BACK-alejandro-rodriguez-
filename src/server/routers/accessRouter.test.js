@@ -57,3 +57,26 @@ describe("Given /login/ endpoint", () => {
     });
   });
 });
+
+describe("Given an /register/ endpoint ", () => {
+  describe("When it recesives a POST request with an username that already exists", () => {
+    test("Then it should response with the status 409 and an error", async () => {
+      const user = { username: "machinazo", password: "1234" };
+      const endpoint = "/register/";
+
+      const { body } = await request(app).post(endpoint).send(user).expect(409);
+
+      expect(body).toHaveProperty("error");
+    });
+  });
+  describe("When it recesives a POST request with an username that doesnt exists", () => {
+    test("Then it should response with the status 200 and the user created", async () => {
+      const user = { username: "machinazo1", password: "1234", name: "jandru" };
+      const endpoint = "/register/";
+
+      const { body } = await request(app).post(endpoint).send(user).expect(200);
+
+      expect(body).toHaveProperty("username");
+    });
+  });
+});
