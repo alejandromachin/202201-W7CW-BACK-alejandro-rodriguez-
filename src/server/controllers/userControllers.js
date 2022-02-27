@@ -34,10 +34,8 @@ const loginUser = async (req, res, next) => {
 };
 
 const registerUser = async (req, res, next) => {
-  const avatar = req.file;
-  console.log(avatar);
   const user = req.body;
-  console.log(user);
+
   const { username, password } = user;
 
   const existingUser = await User.findOne({ username });
@@ -57,11 +55,12 @@ const registerUser = async (req, res, next) => {
     user.image = newFileName;
     const createdUser = await User.create(user);
 
-    return res.json(createdUser);
+    res.json(createdUser);
+  } else {
+    const error = new Error("Sorry, username alredy taken");
+    error.code = 409;
+    next(error);
   }
-  const error = new Error("Sorry, username alredy taken");
-  error.code = 409;
-  next(error);
 };
 
 module.exports = { loginUser, registerUser };
