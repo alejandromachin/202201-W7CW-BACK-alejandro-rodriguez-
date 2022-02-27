@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
+
 const { generalError, notFoundError } = require("./middlewares/errors");
 const accessRouter = require("./routers/accessRouter");
 
@@ -22,4 +23,4 @@ app.use("/", accessRouter);
 
 app.use(notFoundError);
 app.use(generalError);
-module.exports = app;
+module.exports = { app };
