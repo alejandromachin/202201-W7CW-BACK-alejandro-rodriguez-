@@ -1,6 +1,8 @@
 require("dotenv").config();
 const bcrypt = require("bcrypt");
 const jsonwebtoken = require("jsonwebtoken");
+const fs = require("fs");
+const path = require("path");
 const User = require("../../database/models/User");
 const encryptPassword = require("../utils/encryptPassword");
 
@@ -32,7 +34,10 @@ const loginUser = async (req, res, next) => {
 };
 
 const registerUser = async (req, res, next) => {
+  const avatar = req.file;
+  console.log(avatar);
   const user = req.body;
+  console.log(user);
   const { username, password } = user;
 
   const existingUser = await User.findOne({ username });
@@ -40,13 +45,23 @@ const registerUser = async (req, res, next) => {
   if (!existingUser) {
     const encryptedPassword = await encryptPassword(password);
     user.password = encryptedPassword;
+
+    const oldFilename = path.join("uploads", req.file.filename);
+    const newFileName = path.join("uploads", req.file.originalname);
+    fs.rename(oldFilename, newFileName, (error) => {
+      if (error) {
+        next(error);
+      }
+    });
+
+    user.image = newFileName;
     const createdUser = await User.create(user);
-    res.json(createdUser);
-  } else {
-    const error = new Error("Sorry, username alredy taken");
-    error.code = 409;
-    next(error);
+
+    return res.json(createdUser);
   }
+  const error = new Error("Sorry, username alredy taken");
+  error.code = 409;
+  next(error);
 };
 
 module.exports = { loginUser, registerUser };
