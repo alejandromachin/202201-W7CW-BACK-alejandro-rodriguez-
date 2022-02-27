@@ -30,6 +30,7 @@
     "debug": "^4.3.3",
     "dotenv": "^16.0.0",
     "express": "^4.17.3",
+    "firebase": "^9.6.7",
     "jsonwebtoken": "^8.5.1",
     "mongodb-memory-server": "^8.4.0",
     "mongoose": "^6.2.3",

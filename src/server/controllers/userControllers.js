@@ -2,9 +2,17 @@ require("dotenv").config();
 const bcrypt = require("bcrypt");
 const jsonwebtoken = require("jsonwebtoken");
 const fs = require("fs");
+const { ref, uploadBytes, getDownloadURL } = require("firebase/storage");
 const path = require("path");
+const { initializeApp } = require("firebase/app");
+const { getStorage } = require("firebase/storage");
 const User = require("../../database/models/User");
 const encryptPassword = require("../utils/encryptPassword");
+const firebaseConfig = require("../utils/firebaseConfig");
+
+const firebaseApp = initializeApp(firebaseConfig);
+
+const storage = getStorage(firebaseApp);
 
 const loginUser = async (req, res, next) => {
   const { username, password } = req.body;
@@ -43,17 +51,26 @@ const registerUser = async (req, res, next) => {
   if (!existingUser) {
     const encryptedPassword = await encryptPassword(password);
     user.password = encryptedPassword;
+    const createdUser = await User.create(user);
 
     const oldFilename = path.join("uploads", req.file.filename);
     const newFileName = path.join("uploads", req.file.originalname);
-    fs.rename(oldFilename, newFileName, (error) => {
-      if (error) {
-        next(error);
-      }
-    });
 
-    user.image = newFileName;
-    const createdUser = await User.create(user);
+    fs.rename(oldFilename, newFileName, () => {
+      fs.readFile(newFileName, async (error, file) => {
+        if (error) {
+          next(error);
+        }
+        const fileRef = ref(storage, newFileName);
+        await uploadBytes(fileRef, file);
+
+        const imageUrl = await getDownloadURL(fileRef);
+
+        await User.findByIdAndUpdate(createdUser.id, {
+          image: imageUrl,
+        });
+      });
+    });
 
     res.json(createdUser);
   } else {
