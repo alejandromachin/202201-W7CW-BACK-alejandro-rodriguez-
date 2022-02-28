@@ -80,4 +80,17 @@ const registerUser = async (req, res, next) => {
   }
 };
 
-module.exports = { loginUser, registerUser };
+const getUsers = async (req, res, next) => {
+  try {
+    const users = await User.find().populate({
+      path: "dislike",
+      select: "name",
+    });
+    res.status(200).json(users);
+  } catch (error) {
+    error.status = 404;
+    next(error);
+  }
+};
+
+module.exports = { loginUser, registerUser, getUsers };
