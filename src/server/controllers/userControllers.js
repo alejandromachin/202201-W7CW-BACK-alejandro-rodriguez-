@@ -82,10 +82,7 @@ const registerUser = async (req, res, next) => {
 
 const getUsers = async (req, res, next) => {
   try {
-    const users = await User.find().populate({
-      path: "dislike",
-      select: "name",
-    });
+    const users = await User.find();
     res.status(200).json(users);
   } catch (error) {
     error.status = 404;

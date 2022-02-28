@@ -1,7 +1,7 @@
 const bcrypt = require("bcrypt");
 const jsonwebtoken = require("jsonwebtoken");
 const User = require("../../database/models/User");
-const { loginUser } = require("./userControllers");
+const { loginUser, getUsers } = require("./userControllers");
 
 jest.mock("../../database/models/User");
 
@@ -53,6 +53,25 @@ describe("Given a getLogin function", () => {
       await loginUser(req, res, null);
 
       expect(res.json).toHaveBeenCalledWith({ token });
+    });
+  });
+});
+
+describe("Given a getUsers handler", () => {
+  describe("When it receives a response with the GET method", () => {
+    test("Then it should call its json method with a list of users and its status method with a code 200 ", async () => {
+      const users = [
+        { name: "user1", username: "user1" },
+        { name: "user2", username: "user2" },
+      ];
+      const res = { json: jest.fn(), status: jest.fn().mockReturnThis() };
+
+      User.find = jest.fn().mockResolvedValue(users);
+
+      await getUsers(null, res, null);
+
+      expect(res.json).toHaveBeenCalledWith(users);
+      expect(res.status).toHaveBeenCalled();
     });
   });
 });
