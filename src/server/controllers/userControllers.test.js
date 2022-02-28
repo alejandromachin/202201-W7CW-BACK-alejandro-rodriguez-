@@ -74,6 +74,17 @@ describe("Given a getUsers handler", () => {
       expect(res.status).toHaveBeenCalled();
     });
   });
+  describe("When it receives a response with an error", () => {
+    test("Then it should call next method with the error", async () => {
+      const error = new Error("Couldn't find the users");
+
+      User.find = jest.fn().mockResolvedValue(undefined);
+      const next = jest.fn();
+      await getUsers(null, null, next);
+
+      expect(next).toHaveBeenCalledWith(error);
+    });
+  });
 });
 
 // describe("Given a registerUser middleware", () => {
