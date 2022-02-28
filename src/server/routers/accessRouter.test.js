@@ -9,15 +9,34 @@ const connectToDataBase = require("../../database");
 const User = require("../../database/models/User");
 
 let mongoServer;
+
 beforeAll(async () => {
   mongoServer = await MongoMemoryServer.create();
   const connectionString = mongoServer.getUri();
   await connectToDataBase(connectionString);
+});
+
+beforeEach(async () => {
   await User.create({
     name: "Alejandro",
     username: "machinazo",
     password: "$2b$10$YWgU3XTyRRilXcc8uqOpNOTNu1tCzRJKrEyjrajSZJJvcutglPWXO",
   });
+  await User.create({
+    name: "user 1",
+    username: "user1",
+    password: "1234",
+    image: "12345.jpg",
+  });
+  await User.create({
+    name: "user 2",
+    username: "user2",
+    password: "1234",
+    image: "12345.jpg",
+  });
+});
+afterEach(async () => {
+  await User.deleteMany({});
 });
 
 afterAll(async () => {
@@ -29,7 +48,7 @@ describe("Given /login/ endpoint", () => {
   describe("When it receives a POST request and a wrong user", () => {
     test("then it should response with a error and the status code 404 ", async () => {
       const user = { username: "wrong" };
-      const endpoint = "/login/";
+      const endpoint = "/login";
 
       const { body } = await request(app).post(endpoint).send(user).expect(404);
 
@@ -69,6 +88,7 @@ describe("Given an /register/ endpoint ", () => {
       expect(body).toHaveProperty("error");
     });
   });
+
   // describe("When it recesives a POST request with an username that doesnt exists", () => {
   //   test("Then it should response with the status 200 and the user created", async () => {
   //     const user = { username: "machinazo1", password: "1234", name: "jandru" };
@@ -80,6 +100,27 @@ describe("Given an /register/ endpoint ", () => {
   //       .expect(200);
 
   //     expect(body).toHaveProperty("username");
+  //   });
+  // });
+});
+
+describe("Given a /users/ endpoint", () => {
+  describe("When it receives a request with GET method", () => {
+    test("Then it should response with a code 200 and a list of users", async () => {
+      const endpoint = "/users/";
+
+      const { body } = await request(app).get(endpoint).expect(200);
+
+      expect(body).toHaveProperty("users");
+    });
+  });
+  // describe("When it receives a request with GET method but with an error", () => {
+  //   test("Then it should response with a code 404 and a error message", async () => {
+  //     const endpoint = "/users/";
+
+  //     const { body } = await request(app).get(endpoint).expect(404);
+
+  //     expect(body).toHaveProperty("error");
   //   });
   // });
 });
