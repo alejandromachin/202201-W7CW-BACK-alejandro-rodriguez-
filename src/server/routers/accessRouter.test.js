@@ -114,4 +114,13 @@ describe("Given a /users/ endpoint", () => {
       expect(body).toHaveProperty("users");
     });
   });
+  // describe("When it receives a request with GET method but with an error", () => {
+  //   test("Then it should response with a code 404 and a error message", async () => {
+  //     const endpoint = "/users/";
+
+  //     const { body } = await request(app).get(endpoint).expect(404);
+
+  //     expect(body).toHaveProperty("error");
+  //   });
+  // });
 });
