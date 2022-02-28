@@ -70,7 +70,7 @@ describe("Given a getUsers handler", () => {
 
       await getUsers(null, res, null);
 
-      expect(res.json).toHaveBeenCalledWith(users);
+      expect(res.json).toHaveBeenCalledWith({ users });
       expect(res.status).toHaveBeenCalled();
     });
   });
